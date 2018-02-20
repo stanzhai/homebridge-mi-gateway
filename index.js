@@ -47,10 +47,6 @@ function MiGatewayLight(log, config) {
 
     var that = this;
     this._device = null;
-    this.device = new miio.Device({
-        address: that.config.ip,
-        token: that.config.token
-    });
 }
 
 MiGatewayLight.prototype = {
@@ -93,9 +89,9 @@ MiGatewayLight.prototype = {
 
     getDevice: function() {
         var that = this;
-        return new Promise((res, rej) => {
+        return new Promise((resolve, reject) => {
             if (that._device != null) {
-                res(that._device);
+                resolve(that._device);
                 return;
             }
             miio.device({address: that.config.ip, token: that.config.token})
@@ -104,7 +100,7 @@ MiGatewayLight.prototype = {
                     for (const child of children) {
                         if (child.matches('type:light')) {
                             that._device = {device: res, light: child};
-                            res(that._device);
+                            resolve(that._device);
                             break;
                         }
                     }
