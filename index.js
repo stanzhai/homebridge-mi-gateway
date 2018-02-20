@@ -111,25 +111,15 @@ MiGatewayLight.prototype = {
     getPower: function(callback) {
         var that = this;
         this.getDevice().then(res => {
-            return res.device.call("get_prop", ["power"], {sid: res.child.internalId})
-        }).then(result => {
-            console.log(result);
-            callback(null, result);
-        }).catch(callback);
+            return res.light.power()
+        }).then(callback).catch(callback);
     },
 
     setPower: function(value, callback) {
         var that = this;
         this.getDevice().then(res => {
-            return res.device.call("set_power", [value ? "on" : "off"], {sid: res.child.internalId})
-        }).then(result => {
-            console.log(result);
-            if (result[0] == "ok") {
-                callback(null);
-            } else {
-                callback(new Error(result[0]));
-            }
-        }).catch(callback);
+            return res.light.setPower(value)
+        }).then(callback).catch(callback);
     },
 
     getBrightness: function (callback) {
