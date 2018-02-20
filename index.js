@@ -123,18 +123,26 @@ MiGatewayLight.prototype = {
     },
 
     getBrightness: function (callback) {
-        
+        this.getDevice().then(res => {
+            return res.light.brightness();
+        }).then(callback).catch(callback);
     },
 
     setBrightness: function (value, callback) {
-
+        this.getDevice().then(res => {
+            return res.light.setBrightness(value);
+        }).then(callback).catch(callback);
     },
 
     getColorTemperature: function (callback) {
-
+        this.getDevice().then(res => {
+            return res.light.color();
+        }).then(callback).catch(callback);
     },
 
     setColorTemperature: function (value, callback) {
-
+        this.getDevice().then(res => {
+            return res.light.setColor(value);
+        }).then(callback).catch(callback);
     }
 }
