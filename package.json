@@ -23,6 +23,10 @@
     "url": "https://github.com/stanzhai/homebridge-mi-gateway-light/issues"
   },
   "homepage": "https://github.com/stanzhai/homebridge-mi-gateway-light#readme",
+  "engines": {
+    "node": ">=6.0.0",
+    "homebridge": ">=0.4.1"
+  },
   "dependencies": {
     "miio": "^0.14.1"
   }
