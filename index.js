@@ -134,7 +134,7 @@ MiGatewayLight.prototype = {
         const that = this;
         this.getDevice().then(res => {
             const rgb = res.light.gateway.property("rgb");
-            const currentColor = color.rgb(rgb.red, rgb.green, rgb.blue).hsv;
+            const currentColor = color.rgb(rgb.red, rgb.green, rgb.blue).hsl;
             callback(null, currentColor.hue);
         }).catch(callback);
     },
@@ -144,8 +144,8 @@ MiGatewayLight.prototype = {
         this.getDevice().then(res => {
             const rgb = res.light.gateway.property("rgb");
             const brightness = res.light.gateway.property("brightness");
-            const currentColor = color.rgb(rgb.red, rgb.green, rgb.blue).hsv;
-            const newColor = color.hsv(value, currentColor.saturation, brightness).rgb;
+            const currentColor = color.rgb(rgb.red, rgb.green, rgb.blue).hsl;
+            const newColor = color.hsl(value, currentColor.saturation, brightness).rgb;
             return res.light.changeColor(newColor);
         }).then(res => {
             if (res[0] == "ok") {
@@ -160,7 +160,7 @@ MiGatewayLight.prototype = {
         const that = this;
         this.getDevice().then(res => {
             const rgb = res.light.gateway.property("rgb");
-            const currentColor = color.rgb(rgb.red, rgb.green, rgb.blue).hsv;
+            const currentColor = color.rgb(rgb.red, rgb.green, rgb.blue).hsl;
             callback(null, currentColor.saturation);
         }).catch(callback);
     },
@@ -170,8 +170,8 @@ MiGatewayLight.prototype = {
         this.getDevice().then(res => {
             const rgb = res.light.gateway.property("rgb");
             const brightness = res.light.gateway.property("brightness");
-            const currentColor = color.rgb(rgb.red, rgb.green, rgb.blue).hsv;
-            const newColor = color.hsv(currentColor.hue, value, brightness).rgb;
+            const currentColor = color.rgb(rgb.red, rgb.green, rgb.blue).hsl;
+            const newColor = color.hsl(currentColor.hue, value, brightness).rgb;
             return res.light.changeColor(newColor);
         }).then(res => {
             if (res[0] == "ok") {
@@ -182,3 +182,5 @@ MiGatewayLight.prototype = {
         }).catch(callback);
     }
 }
+
+// TODO: hsl -> hsv ?
