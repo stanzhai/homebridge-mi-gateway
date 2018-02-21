@@ -1,31 +1,29 @@
 const fs = require('fs');
 const miio = require('miio');
-const util = require('./util');
-var Accessory, Service, Characteristic, UUIDGen;
+const { color } = require('abstract-things/values');
+var Service, Characteristic;
 
 module.exports = function(homebridge) {
     if(!isConfig(homebridge.user.configPath(), "accessories", "MiGatewayLight")) {
         return;
     }
 
-    Accessory = homebridge.platformAccessory;
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
-    UUIDGen = homebridge.hap.uuid;
 
     homebridge.registerAccessory('homebridge-mi-gateway-light', 'MiGatewayLight', MiGatewayLight);
 }
 
 function isConfig(configFile, type, name) {
     var config = JSON.parse(fs.readFileSync(configFile));
-    if("accessories" === type) {
+    if ("accessories" === type) {
         var accessories = config.accessories;
         for(var i in accessories) {
             if(accessories[i]['accessory'] === name) {
                 return true;
             }
         }
-    } else if("platforms" === type) {
+    } else if ("platforms" === type) {
         var platforms = config.platforms;
         for(var i in platforms) {
             if(platforms[i]['platform'] === name) {
@@ -45,10 +43,7 @@ function MiGatewayLight(log, config) {
 
     this.log = log;
     this.config = config;
-
-    var that = this;
     this._device = null;
-    this.lightInfo = {};
 }
 
 MiGatewayLight.prototype = {
@@ -109,12 +104,6 @@ MiGatewayLight.prototype = {
         });
     },
 
-    updateLightInfo: function (rgb) {
-        var hs = util.rgbToHsv(rgb.red, rgb.green, rgb.blue);
-        this.lightInfo.hue = hs[0];
-        this.lightInfo.saturation = hs[1];
-    },
-
     getPower: function(callback) {
         var that = this;
         this.getDevice().then(res => {
@@ -144,36 +133,52 @@ MiGatewayLight.prototype = {
     getHue: function (callback) {
         const that = this;
         this.getDevice().then(res => {
-            var rgb = res.light.gateway.property("rgb");
-            that.updateLightInfo(rgb);
-            callback(null, that.lightInfo.hue);
+            const rgb = res.light.gateway.property("rgb");
+            const color = color.rgb(rgb.red, rgb.green, rgb.blue);
+            callback(null, color.hue());
         }).catch(callback);
     },
 
     setHue: function (value, callback) {
         const that = this;
         this.getDevice().then(res => {
-            that.lightInfo.hue = value;
-            var rgb = util.hsv2rgb(value, that.lightInfo.saturation, 1);
-            return res.light.changeColor(rgb)
-        }).then(res => callback(null)).catch(callback);
+            const rgb = res.light.gateway.property("rgb");
+            const brightness = res.light.gateway.property("brightness");
+            const color = color.rgb(rgb.red, rgb.green, rgb.blue);
+            const newColor = color.hsv(value, color.saturation(), brightness);
+            return res.light.changeColor(newColor);
+        }).then(res => {
+            if (res[0] == "ok") {
+                callback(null);
+            } else {
+                callback(res);
+            }
+        }).catch(callback);
     },
 
     getSaturation: function (callback) {
         const that = this;
         this.getDevice().then(res => {
-            var rgb = res.light.gateway.property("rgb");
-            that.updateLightInfo(rgb);
-            callback(null, that.lightInfo.saturation);
+            const rgb = res.light.gateway.property("rgb");
+            const color = color.rgb(rgb.red, rgb.green, rgb.blue);
+            callback(null, color.saturation());
         }).catch(callback);
     },
 
     setSaturation: function (value, callback) {
         const that = this;
         this.getDevice().then(res => {
-            that.lightInfo.saturation = value;
-            var rgb = util.hsv2rgb(that.lightInfo.hue, value, 1);
-            return res.light.changeColor(rgb)
-        }).then(res => callback(null)).catch(callback);
+            const rgb = res.light.gateway.property("rgb");
+            const brightness = res.light.gateway.property("brightness");
+            const color = color.rgb(rgb.red, rgb.green, rgb.blue);
+            const newColor = color.hsv(color.hue(), value, brightness);
+            return res.light.changeColor(newColor);
+        }).then(res => {
+            if (res[0] == "ok") {
+                callback(null);
+            } else {
+                callback(res);
+            }
+        }).catch(callback);
     }
 }
