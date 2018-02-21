@@ -34,6 +34,7 @@ Modify `~/.homebridge/config.json`.
     "accessory": "MiGateway",
     "ip": "192.168.123.xx",
     "token": "your-token",
+    "name": "MiGateway",
     "fmName": "FM",
     "lightName": "Lightbulb",
     "securityName": "Security"

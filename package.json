@@ -1,6 +1,6 @@
 {
   "name": "homebridge-mi-gateway",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "XiaoMi Gateway plugin for HomeBridge.",
   "keywords": [
     "homebridge-plugin",
