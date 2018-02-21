@@ -1,5 +1,6 @@
 const fs = require('fs');
 const miio = require('miio');
+const util = require('./util');
 var Accessory, Service, Characteristic, UUIDGen;
 
 module.exports = function(homebridge) {
@@ -47,6 +48,7 @@ function MiGatewayLight(log, config) {
 
     var that = this;
     this._device = null;
+    this.lightInfo = {};
 }
 
 MiGatewayLight.prototype = {
@@ -74,14 +76,13 @@ MiGatewayLight.prototype = {
             .on('get', this.getBrightness.bind(this))
             .on('set', this.setBrightness.bind(this));
         lightService
-            .addCharacteristic(Characteristic.ColorTemperature)
-            .setProps({
-                minValue: 50,
-                maxValue: 400,
-                minStep: 1
-            })
-            .on('get', this.getColorTemperature.bind(this))
-            .on('set', this.setColorTemperature.bind(this));
+            .addCharacteristic(Characteristic.Hue)
+            .on('get', this.getHue.bind(this))
+            .on('set', this.setHue.bind(this));
+        lightService
+            .addCharacteristic(Characteristic.Saturation)
+            .on('get', this.getSaturation.bind(this))
+            .on('set', this.setSaturation.bind(this));
         services.push(lightService);
 
         return services;
@@ -108,41 +109,71 @@ MiGatewayLight.prototype = {
         });
     },
 
+    updateLightInfo: function (rgb) {
+        var hs = util.rgbToHsv(rgb.red, rgb.green, rgb.blue);
+        this.lightInfo.hue = hs[0];
+        this.lightInfo.saturation = hs[1];
+    },
+
     getPower: function(callback) {
         var that = this;
         this.getDevice().then(res => {
             return res.light.power()
-        }).then(callback).catch(callback);
+        }).then(power => callback(null, power)).catch(callback);
     },
 
     setPower: function(value, callback) {
         var that = this;
         this.getDevice().then(res => {
             return res.light.setPower(value)
-        }).then(callback).catch(callback);
+        }).then(power => callback(null)).catch(callback);
     },
 
     getBrightness: function (callback) {
         this.getDevice().then(res => {
-            return res.light.brightness();
-        }).then(callback).catch(callback);
+            callback(null, res.light.gateway.property("brightness"));
+        }).catch(callback);
     },
 
     setBrightness: function (value, callback) {
         this.getDevice().then(res => {
-            return res.light.setBrightness(value);
-        }).then(callback).catch(callback);
+            return res.light.changeBrightness(value);
+        }).then(bright => callback(null)).catch(callback);
     },
 
-    getColorTemperature: function (callback) {
+    getHue: function (callback) {
+        const that = this;
         this.getDevice().then(res => {
-            return res.light.color();
-        }).then(callback).catch(callback);
+            var rgb = res.light.gateway.property("rgb");
+            that.updateLightInfo(rgb);
+            callback(null, that.lightInfo.hue);
+        }).catch(callback);
     },
 
-    setColorTemperature: function (value, callback) {
+    setHue: function (value, callback) {
+        const that = this;
         this.getDevice().then(res => {
-            return res.light.setColor(value);
-        }).then(callback).catch(callback);
+            that.lightInfo.hue = value;
+            var rgb = util.hsv2rgb(value, that.lightInfo.saturation, 1);
+            return res.light.changeColor(rgb)
+        }).then(res => callback(null)).catch(callback);
+    },
+
+    getSaturation: function (callback) {
+        const that = this;
+        this.getDevice().then(res => {
+            var rgb = res.light.gateway.property("rgb");
+            that.updateLightInfo(rgb);
+            callback(null, that.lightInfo.saturation);
+        }).catch(callback);
+    },
+
+    setSaturation: function (value, callback) {
+        const that = this;
+        this.getDevice().then(res => {
+            that.lightInfo.saturation = value;
+            var rgb = util.hsv2rgb(that.lightInfo.hue, value, 1);
+            return res.light.changeColor(rgb)
+        }).then(res => callback(null)).catch(callback);
     }
 }
