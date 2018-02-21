@@ -1,32 +1,36 @@
-# homebridge-mi-gateway-light
+# homebridge-mi-gateway
 
-[![npm version](https://badge.fury.io/js/homebridge-mi-gateway-fm.svg)](https://badge.fury.io/js/homebridge-mi-gateway-fm)
+[![npm version](https://badge.fury.io/js/homebridge-mi-gateway.svg)](https://badge.fury.io/js/homebridge-mi-gateway)
 
-XiaoMi Gateway Lightbulb plugin for HomeBridge.
-
-![](https://raw.githubusercontent.com/stanzhai/homebridge-mi-gateway-light/master/Gateway.jpg)
+XiaoMi Gateway plugin for HomeBridge.
 
 Thanks for [nfarina](https://github.com/nfarina)(the author of [homebridge](https://github.com/nfarina/homebridge)), [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol), [aholstenson](https://github.com/aholstenson)(the author of [miio](https://github.com/aholstenson/miio)), all other developer and testers.
+
+## Pre-Requirements
+
+Make sure you have V2 of the gateway.
+
+![](https://raw.githubusercontent.com/stanzhai/homebridge-mi-gateway/master/Gateway.jpg)
 
 ## Installation
 
 1. Install HomeBridge, please follow it's [README](https://github.com/nfarina/homebridge/blob/master/README.md).   
 If you are using Raspberry Pi, please read [Running-HomeBridge-on-a-Raspberry-Pi](https://github.com/nfarina/homebridge/wiki/Running-HomeBridge-on-a-Raspberry-Pi).   
 2. Make sure you can see HomeBridge in your iOS devices, if not, please go back to step 1.   
-3. Install this plugin.   
-
-```
-npm install -g homebridge-mi-gateway-light
-```
+3. Install this plugin.   `npm install -g homebridge-mi-gateway`
 
 ## Configuration
 
+Modify `~/.homebridge/config.json`.
+
 ```
 "accessories": [{
-    "accessory": "MiGatewayLight",
-    "name": "MiGatewayLight",
+    "accessory": "MiGateway",
     "ip": "192.168.123.xx",
-    "token": "your-token"
+    "token": "your-token",
+    "fmName": "FM",
+    "lightName": "Lightbulb",
+    "securityName": "Security"
 }]
 ```
 
@@ -70,3 +74,7 @@ miio --discover --sync
 
 Wait until you get output.   
 For more information about token, please refer to [OpenMiHome](https://github.com/OpenMiHome/mihome-binary-protocol) and [miio](https://github.com/aholstenson/miio).   
+
+## License
+
+Copyright 2018 by Stan Zhai. Licensed under MIT.

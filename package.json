@@ -1,13 +1,11 @@
 {
-  "name": "homebridge-mi-gateway-light",
+  "name": "homebridge-mi-gateway",
   "version": "0.1.1",
-  "description": "XiaoMi Gateway Lightbulb plugin for HomeBridge.",
+  "description": "XiaoMi Gateway plugin for HomeBridge.",
   "keywords": [
     "homebridge-plugin",
     "xiaomi",
-    "gateway",
-    "light",
-    "lightbulb"
+    "gateway"
   ],
   "main": "index.js",
   "scripts": {
@@ -15,14 +13,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stanzhai/homebridge-mi-gateway-light.git"
+    "url": "git+https://github.com/stanzhai/homebridge-mi-gateway.git"
   },
   "author": "stanzhai",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/stanzhai/homebridge-mi-gateway-light/issues"
+    "url": "https://github.com/stanzhai/homebridge-mi-gateway/issues"
   },
-  "homepage": "https://github.com/stanzhai/homebridge-mi-gateway-light#readme",
+  "homepage": "https://github.com/stanzhai/homebridge-mi-gateway#readme",
   "engines": {
     "node": ">=6.0.0",
     "homebridge": ">=0.4.1"
