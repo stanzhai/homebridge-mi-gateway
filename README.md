@@ -12,6 +12,12 @@ Make sure you have V2 of the gateway.
 
 ![](https://raw.githubusercontent.com/stanzhai/homebridge-mi-gateway/master/Gateway.jpg)
 
+## Features
+
+- FM Switch
+- Lightbulb Control
+- Security
+
 ## Installation
 
 1. Install HomeBridge, please follow it's [README](https://github.com/nfarina/homebridge/blob/master/README.md).   
